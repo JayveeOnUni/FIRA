@@ -1,0 +1,34 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "FIRA backend service (Phase 7 responsible AI and governance enhancements)",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "echo No tests configured for this phase yet",
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "db:migrate": "node scripts/db-migrate.js",
+    "db:seed": "node scripts/db-seed.js",
+    "test:phase6:functional": "node scripts/phase6-functional-check.js",
+    "test:phase7:governance": "node scripts/phase7-governance-check.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.1",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.10.1",
+    "multer": "^2.1.1",
+    "pg": "^8.20.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

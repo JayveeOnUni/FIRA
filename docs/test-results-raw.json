@@ -1,0 +1,169 @@
+{
+  "executedAt": "2026-04-11T03:48:03.251Z",
+  "total": 16,
+  "passed": 16,
+  "failed": 0,
+  "cases": [
+    {
+      "id": "TC-001",
+      "module": "Health and Readiness",
+      "preconditions": "Server, DB, and AI mock service running",
+      "steps": "GET /api/health",
+      "expectedResult": "HTTP 200 with status ok and dependency checks",
+      "actualResult": "HTTP 200; status=ok",
+      "status": "pass",
+      "notes": "Response time 189ms"
+    },
+    {
+      "id": "TC-002",
+      "module": "Authentication",
+      "preconditions": "No existing account for applicant email",
+      "steps": "POST /api/auth/register/applicant",
+      "expectedResult": "Applicant account created and authenticated session returned",
+      "actualResult": "HTTP 201; role=applicant",
+      "status": "pass",
+      "notes": "Response time 297ms"
+    },
+    {
+      "id": "TC-003",
+      "module": "Authentication",
+      "preconditions": "No existing account for employer email",
+      "steps": "POST /api/auth/register/employer",
+      "expectedResult": "Employer account created and authenticated session returned",
+      "actualResult": "HTTP 201; role=employer",
+      "status": "pass",
+      "notes": "Response time 263ms"
+    },
+    {
+      "id": "TC-004",
+      "module": "Authentication",
+      "preconditions": "Seeded staff account exists",
+      "steps": "POST /api/auth/login",
+      "expectedResult": "Agency staff login succeeds",
+      "actualResult": "HTTP 200; role=agency_staff",
+      "status": "pass",
+      "notes": "Response time 252ms"
+    },
+    {
+      "id": "TC-005",
+      "module": "Role-Based Access",
+      "preconditions": "Authenticated applicant session",
+      "steps": "GET /api/employers/jobs",
+      "expectedResult": "Access denied with HTTP 403",
+      "actualResult": "HTTP 403",
+      "status": "pass",
+      "notes": "Confirms route-level role guard enforcement."
+    },
+    {
+      "id": "TC-006",
+      "module": "Employer Job Workflow",
+      "preconditions": "Authenticated employer session with company profile",
+      "steps": "POST /api/employers/jobs",
+      "expectedResult": "Job created successfully",
+      "actualResult": "HTTP 201; jobId=16",
+      "status": "pass",
+      "notes": "Response time 10ms"
+    },
+    {
+      "id": "TC-007",
+      "module": "Public Job Browsing",
+      "preconditions": "At least one published public job exists",
+      "steps": "GET /api/jobs",
+      "expectedResult": "Public job listing contains created job",
+      "actualResult": "HTTP 200; count=16",
+      "status": "pass",
+      "notes": "Response time 6ms"
+    },
+    {
+      "id": "TC-008",
+      "module": "Applicant Application Workflow",
+      "preconditions": "Authenticated applicant and published job",
+      "steps": "POST /api/jobs/16/apply",
+      "expectedResult": "Application created with status Applied",
+      "actualResult": "HTTP 201; applicationId=29",
+      "status": "pass",
+      "notes": "Response time 27ms"
+    },
+    {
+      "id": "TC-009",
+      "module": "Reliability - Duplicate Prevention",
+      "preconditions": "Existing application for applicant/job pair",
+      "steps": "POST /api/jobs/16/apply again",
+      "expectedResult": "Duplicate prevented with HTTP 409",
+      "actualResult": "HTTP 409",
+      "status": "pass",
+      "notes": "Verifies unique application constraint behavior."
+    },
+    {
+      "id": "TC-010",
+      "module": "ATS Staff Workflow",
+      "preconditions": "Staff authenticated and application exists",
+      "steps": "PATCH /api/agency-staff/applications/29/status",
+      "expectedResult": "Status updates to Under Review",
+      "actualResult": "HTTP 200; status=Under Review",
+      "status": "pass",
+      "notes": "Response time 7ms"
+    },
+    {
+      "id": "TC-011",
+      "module": "Endorsement Workflow",
+      "preconditions": "Staff authenticated and application in active ATS flow",
+      "steps": "POST /api/agency-staff/applications/29/endorse",
+      "expectedResult": "Application endorsed and status set to Endorsed",
+      "actualResult": "HTTP 201; status=Endorsed",
+      "status": "pass",
+      "notes": "Response time 6ms"
+    },
+    {
+      "id": "TC-012",
+      "module": "Applicant Matching Workflow",
+      "preconditions": "Applicant authenticated with profile and at least one published job",
+      "steps": "GET /api/matching/applicant/recommended-jobs",
+      "expectedResult": "Recommendations returned with scores",
+      "actualResult": "HTTP 200; count=5",
+      "status": "pass",
+      "notes": "Response time 27ms"
+    },
+    {
+      "id": "TC-013",
+      "module": "Employer Matching Workflow",
+      "preconditions": "Employer authenticated and applicants exist for job",
+      "steps": "GET /api/matching/employer/jobs/16/ranked-applicants",
+      "expectedResult": "Ranked applicants returned with scores",
+      "actualResult": "HTTP 200; count=1",
+      "status": "pass",
+      "notes": "Response time 10ms"
+    },
+    {
+      "id": "TC-014",
+      "module": "Staff Matching Visibility",
+      "preconditions": "Staff authenticated and applicants exist for job",
+      "steps": "GET /api/matching/staff/jobs/16/ranked-applicants",
+      "expectedResult": "Ranked applicants returned for staff with scores",
+      "actualResult": "HTTP 200; count=1",
+      "status": "pass",
+      "notes": "Response time 6ms"
+    },
+    {
+      "id": "TC-015",
+      "module": "Decision-Support Integrity",
+      "preconditions": "Application already endorsed before matching call",
+      "steps": "Call matching endpoints and re-check application status",
+      "expectedResult": "ATS status remains unchanged by matching calls",
+      "actualResult": "before=Endorsed; after=Endorsed",
+      "status": "pass",
+      "notes": "Confirms matching does not auto-mutate ATS state."
+    },
+    {
+      "id": "TC-016",
+      "module": "Reliability - Dependency Failure Handling",
+      "preconditions": "AI service intentionally stopped",
+      "steps": "GET /api/matching/applicant/recommended-jobs",
+      "expectedResult": "Graceful 503 with meaningful message",
+      "actualResult": "HTTP 503; message=AI matching service health check failed",
+      "status": "pass",
+      "notes": "Validates fallback behavior when AI service is unavailable."
+    }
+  ],
+  "defects": []
+}

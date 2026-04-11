@@ -1,0 +1,43 @@
+{
+  "executedAt": "2026-04-11T04:28:25.017Z",
+  "total": 7,
+  "passed": 7,
+  "failed": 0,
+  "checks": [
+    {
+      "id": "P7-001",
+      "status": "pass",
+      "actual": "status=200; relevance_label=High relevance"
+    },
+    {
+      "id": "P7-002",
+      "status": "pass",
+      "actual": "status=201"
+    },
+    {
+      "id": "P7-003",
+      "status": "pass",
+      "actual": "status=201"
+    },
+    {
+      "id": "P7-004",
+      "status": "pass",
+      "actual": "status=200; actions=1; notes=1"
+    },
+    {
+      "id": "P7-005",
+      "status": "pass",
+      "actual": "status=200; runtime=true"
+    },
+    {
+      "id": "P7-006",
+      "status": "pass",
+      "actual": "status=200"
+    },
+    {
+      "id": "P7-007",
+      "status": "pass",
+      "actual": "status=403"
+    }
+  ]
+}

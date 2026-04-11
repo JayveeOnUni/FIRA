@@ -1,0 +1,36 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+build/
+.vite/
+coverage/
+
+# Local uploads
+server/uploads/*
+!server/uploads/.gitkeep
+!server/uploads/applicant-documents/
+!server/uploads/applicant-documents/.gitkeep
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

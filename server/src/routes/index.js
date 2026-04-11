@@ -1,0 +1,28 @@
+const express = require('express')
+const healthRoutes = require('./health.routes')
+const publicWebsiteRoutes = require('./public-website.routes')
+const applicantRoutes = require('./applicant.routes')
+const employerRoutes = require('./employer.routes')
+const agencyStaffRoutes = require('./agency-staff.routes')
+const atsRoutes = require('./ats.routes')
+const matchingRoutes = require('./matching.routes')
+const authRoutes = require('./auth.routes')
+const usersRoutes = require('./users.routes')
+const jobsRoutes = require('./jobs.routes')
+const applicationsRoutes = require('./applications.routes')
+
+const router = express.Router()
+
+router.use('/health', healthRoutes)
+router.use('/public-website', publicWebsiteRoutes)
+router.use('/applicants', applicantRoutes)
+router.use('/employers', employerRoutes)
+router.use('/agency-staff', agencyStaffRoutes)
+router.use('/ats', atsRoutes)
+router.use('/matching', matchingRoutes)
+router.use('/auth', authRoutes)
+router.use('/users', usersRoutes)
+router.use('/jobs', jobsRoutes)
+router.use('/applications', applicationsRoutes)
+
+module.exports = router
