@@ -1,5 +1,14 @@
 # Matching Evaluation Plan
 
+## Implementation Status
+
+FIRA now includes a production-oriented matching evaluation module (migration `006`, API `/api/matching-evaluation`, docs below). Use this plan for thesis methodology and the implementation guides for day-to-day operations.
+
+- Dataset workflow: `docs/matching-evaluation-dataset-guide.md`
+- Labeling workflow: `docs/matching-evaluation-labeling-guide.md`
+- Metric interpretation: `docs/matching-evaluation-metrics-guide.md`
+- Run/verify steps: `docs/matching-evaluation-implementation-summary.md`
+
 ## Purpose
 
 This document defines how the SBERT-based matching module should be evaluated for thesis defense. Functional endpoint tests show that the matching workflow runs, but they do not prove that the ranking quality is useful for recruitment. This plan fills that gap.
@@ -46,10 +55,10 @@ Each applicant-job pair should be rated by a recruitment-domain evaluator.
 
 | Label | Meaning |
 |---:|---|
-| 0 | Not relevant |
-| 1 | Weakly relevant |
-| 2 | Moderately relevant |
-| 3 | Highly relevant |
+| `not_relevant` | Not relevant |
+| `partially_relevant` | Weakly / partially relevant |
+| `relevant` | Moderately relevant |
+| `highly_relevant` | Highly relevant |
 
 If two evaluators are available, disagreements should be resolved through discussion or reported as evaluator disagreement.
 

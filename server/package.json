@@ -12,7 +12,9 @@
     "db:backup": "node scripts/db-backup.js",
     "db:restore": "node scripts/db-restore.js",
     "test:phase6:functional": "node scripts/phase6-functional-check.js",
-    "test:phase7:governance": "node scripts/phase7-governance-check.js"
+    "test:phase7:governance": "node scripts/phase7-governance-check.js",
+    "test:matching-evaluation:metrics": "node scripts/match-evaluation-metrics-check.js",
+    "test:matching-evaluation:workflow": "node scripts/match-evaluation-workflow-check.js"
   },
   "keywords": [],
   "author": "",

@@ -16,6 +16,17 @@ const JOB_STATUSES = ['draft', 'published', 'closed']
 const MATCH_SCORE_TYPE_SBERT = 'sbert_cosine_similarity'
 const MATCH_SOURCE_VERSION = 'phase5_v1'
 
+const MATCH_EVAL_RELEVANCE_LABELS = ['highly_relevant', 'relevant', 'partially_relevant', 'not_relevant']
+const MATCH_EVAL_DATASET_STATUSES = ['draft', 'active', 'archived']
+const MATCH_EVAL_RUN_STATUSES = ['pending', 'running', 'completed', 'failed', 'partial']
+const MATCH_EVAL_METHODS = ['sbert', 'keyword_overlap', 'tfidf']
+const MATCH_EVAL_GRADE_BY_LABEL = {
+  highly_relevant: 3,
+  relevant: 2,
+  partially_relevant: 1,
+  not_relevant: 0,
+}
+
 module.exports = {
   APPLICATION_STATUSES,
   MATCH_REVIEW_ACTION_TYPES,
@@ -24,4 +35,9 @@ module.exports = {
   JOB_STATUSES,
   MATCH_SCORE_TYPE_SBERT,
   MATCH_SOURCE_VERSION,
+  MATCH_EVAL_RELEVANCE_LABELS,
+  MATCH_EVAL_DATASET_STATUSES,
+  MATCH_EVAL_RUN_STATUSES,
+  MATCH_EVAL_METHODS,
+  MATCH_EVAL_GRADE_BY_LABEL,
 }
