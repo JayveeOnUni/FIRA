@@ -5,10 +5,17 @@ const cookieParser = require('cookie-parser')
 const apiRoutes = require('./routes')
 const { env } = require('./config/env')
 const { attachRequestContext } = require('./middleware/requestContext')
+const { securityHeaders } = require('./middleware/securityHeaders')
 const { notFound } = require('./middleware/notFound')
 const { errorHandler } = require('./middleware/errorHandler')
 
 const app = express()
+
+if (env.nodeEnv === 'production') {
+  app.set('trust proxy', 1)
+}
+
+app.use(securityHeaders)
 
 app.use(
   cors({

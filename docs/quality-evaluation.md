@@ -1,16 +1,19 @@
 # Quality Evaluation Support (ISO/IEC 25010-Aligned)
 
 ## Scope and Method
-This is a prototype-grade evaluation support document for Phase 6. It maps real validation evidence to selected ISO/IEC 25010 characteristics:
+This is a prototype-grade evaluation support document for Phase 6 through Priority 4 finalization. It maps validation evidence to selected ISO/IEC 25010 characteristics:
 - Functional suitability
 - Usability
 - Performance efficiency
 - Reliability
+- Security
+- Maintainability/Portability readiness
 
 Evidence comes from:
 - `docs/test-cases.md`
 - `docs/test-results-raw.json`
 - `docs/test-reliability-runs.json`
+- `docs/matching-evaluation-plan.md`
 - build and startup checks executed in Phase 6
 
 ## 1) Functional Suitability
@@ -71,6 +74,41 @@ Frontend build check:
 ## Evaluation Limitations
 - No formal certification-grade ISO/IEC audit was performed.
 - No heavy load/stress testing or distributed performance profiling.
-- AI quality metrics (precision/recall/benchmark datasets) are outside this phase scope.
+- Existing functional tests confirm matching workflow integration, but they do not prove ranking quality.
+- Matching quality must be evaluated separately with relevance labels, baseline comparison, and ranking metrics as defined in `docs/matching-evaluation-plan.md`.
 - Automated functional suite used a deterministic mock AI endpoint for integration reliability checks in this environment.
 - Fairness/bias instrumentation remains deferred beyond this prototype phase.
+
+## Matching Quality Evaluation Addendum
+The thesis methodology should treat AI matching evaluation as separate from ordinary API testing.
+
+Recommended thesis evidence:
+- representative applicant-job evaluation dataset
+- expert relevance labels
+- baseline comparison against keyword overlap or TF-IDF
+- ranking metrics such as Precision@5 and NDCG@10
+- qualitative error analysis of weak or incorrect matches
+
+This addendum prevents the project from claiming SBERT effectiveness based only on successful endpoint responses.
+
+## 5) Security
+### Evidence
+- Role-guarded backend routes protect applicant, employer, and agency staff workflows.
+- Priority 4 adds baseline HTTP hardening headers (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, conditional HSTS).
+- Production startup validates that `DATABASE_URL`, `CLIENT_ORIGIN`, `AI_SERVICE_URL`, and a strong `JWT_SECRET` are configured.
+- Staff audit monitoring endpoints are protected by existing `requireAuth` and `requireRole('agency_staff')` middleware.
+
+### Interpretation
+- The prototype has release-ready baseline security controls for a controlled deployment.
+- It still requires HTTPS, secret management, and hosting-level protections in the target environment.
+
+## 6) Maintainability and Portability Readiness
+### Evidence
+- Environment examples are present for client, server, and AI service.
+- Deployment guide now includes backup/export, security readiness, and defense-demo checklist.
+- `server/scripts/db-backup.js` provides a repeatable database export command using standard PostgreSQL tooling.
+- Request IDs and diagnostic logging support issue tracing during demos and regression checks.
+
+### Interpretation
+- The system is easier to move between local demo and controlled deployment environments.
+- Backup/export preparation supports final project handover and defense evidence.

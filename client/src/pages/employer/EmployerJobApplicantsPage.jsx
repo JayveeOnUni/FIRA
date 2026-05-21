@@ -260,6 +260,9 @@ export function EmployerJobApplicantsPage() {
                     keywords={rankingMap[item.applicant_id].explanation_keywords}
                     relevanceLabel={rankingMap[item.applicant_id].relevance_label}
                     scoreGuidance={rankingMap[item.applicant_id].score_guidance}
+                    confidenceLabel={rankingMap[item.applicant_id].confidence_label}
+                    confidenceGuidance={rankingMap[item.applicant_id].confidence_guidance}
+                    rankingReasons={rankingMap[item.applicant_id].ranking_reasons}
                     matchedSkills={rankingMap[item.applicant_id].matched_skills}
                     matchedQualifications={rankingMap[item.applicant_id].matched_qualifications}
                     matchedExperience={rankingMap[item.applicant_id].matched_experience}

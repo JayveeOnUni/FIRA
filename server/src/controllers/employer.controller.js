@@ -32,7 +32,10 @@ async function createEmployerJobController(req, res) {
 }
 
 async function listEmployerJobsController(req, res) {
-  const jobs = await listEmployerJobs(req.auth.userId)
+  const jobs = await listEmployerJobs(req.auth.userId, {
+    status: req.query.status,
+    search: req.query.search,
+  })
   return res.status(200).json({
     jobs,
     count: jobs.length,

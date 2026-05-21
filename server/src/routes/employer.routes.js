@@ -1,5 +1,5 @@
 const express = require('express')
-const { roleDashboardController } = require('../controllers/dashboard.controller')
+const { employerDashboardController } = require('../controllers/dashboard.controller')
 const { requireAuth } = require('../middleware/authRequired')
 const { requireRole } = require('../middleware/roleGuard')
 const { asyncHandler } = require('../utils/asyncHandler')
@@ -22,7 +22,7 @@ const {
 
 const router = express.Router()
 
-router.get('/dashboard', requireAuth, requireRole('employer'), roleDashboardController('employer'))
+router.get('/dashboard', requireAuth, requireRole('employer'), asyncHandler(employerDashboardController))
 router.get('/company', requireAuth, requireRole('employer'), asyncHandler(getEmployerCompanyController))
 router.put(
   '/company',

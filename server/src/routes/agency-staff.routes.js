@@ -16,6 +16,9 @@ const {
   staffEndorsementsController,
   staffOperationalSummaryController,
   staffAtsCatalogController,
+  staffAuditActivitySummaryController,
+  staffAuditLogsController,
+  staffMaintenanceReadinessController,
 } = require('../controllers/staff.controller')
 
 const router = express.Router()
@@ -25,6 +28,9 @@ router.use(requireAuth, requireRole('agency_staff'))
 router.get('/dashboard', asyncHandler(staffDashboardController))
 router.get('/ats/catalog', asyncHandler(staffAtsCatalogController))
 router.get('/reports/summary', asyncHandler(staffOperationalSummaryController))
+router.get('/audit/summary', asyncHandler(staffAuditActivitySummaryController))
+router.get('/audit/logs', asyncHandler(staffAuditLogsController))
+router.get('/maintenance/readiness', asyncHandler(staffMaintenanceReadinessController))
 
 router.get('/applicants', asyncHandler(staffApplicantListController))
 router.get('/applicants/:applicantId', asyncHandler(staffApplicantDetailController))

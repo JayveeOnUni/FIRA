@@ -1,3 +1,8 @@
+const {
+  getApplicantDashboardSummary,
+  getEmployerDashboardSummary,
+} = require('../services/dashboard.service')
+
 function roleDashboardController(roleName) {
   return (req, res) => {
     return res.status(200).json({
@@ -8,4 +13,18 @@ function roleDashboardController(roleName) {
   }
 }
 
-module.exports = { roleDashboardController }
+async function applicantDashboardController(req, res) {
+  const summary = await getApplicantDashboardSummary(req.auth.userId)
+  return res.status(200).json(summary)
+}
+
+async function employerDashboardController(req, res) {
+  const summary = await getEmployerDashboardSummary(req.auth.userId)
+  return res.status(200).json(summary)
+}
+
+module.exports = {
+  roleDashboardController,
+  applicantDashboardController,
+  employerDashboardController,
+}

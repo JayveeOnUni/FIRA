@@ -3,6 +3,9 @@ export function MatchExplanation({
   keywords = [],
   relevanceLabel,
   scoreGuidance,
+  confidenceLabel,
+  confidenceGuidance,
+  rankingReasons = [],
   matchedSkills = [],
   matchedQualifications = [],
   matchedExperience = [],
@@ -13,17 +16,38 @@ export function MatchExplanation({
   const hasMatchedQualifications = Array.isArray(matchedQualifications) && matchedQualifications.length > 0
   const hasMatchedExperience = Array.isArray(matchedExperience) && matchedExperience.length > 0
   const hasWarnings = Array.isArray(warnings) && warnings.length > 0
+  const hasRankingReasons = Array.isArray(rankingReasons) && rankingReasons.length > 0
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2" aria-label="Match explanation">
       {relevanceLabel && (
         <p className="text-xs font-semibold uppercase tracking-wide text-slate-700">
           {relevanceLabel}
         </p>
       )}
 
+      {confidenceLabel && (
+        <p className="text-xs font-semibold text-slate-700">
+          Confidence: {confidenceLabel}
+        </p>
+      )}
+
       {summary && <p className="text-xs text-slate-600">{summary}</p>}
       {scoreGuidance && <p className="text-xs text-slate-500">{scoreGuidance}</p>}
+      {confidenceGuidance && <p className="text-xs text-slate-500">{confidenceGuidance}</p>}
+
+      {hasRankingReasons && (
+        <div className="rounded-md border border-slate-200 bg-white p-2">
+          <p className="text-xs font-semibold text-slate-700">Why this rank appears</p>
+          <ul className="mt-1 list-disc space-y-1 pl-4">
+            {rankingReasons.map((reason, index) => (
+              <li key={`${reason}-${index}`} className="text-xs text-slate-600">
+                {reason}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {hasKeywords && (
         <p className="text-xs text-slate-500">

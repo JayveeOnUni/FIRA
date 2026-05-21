@@ -2,28 +2,52 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { listEmployerJobs } from '../../services/employerService'
 
+const initialFilters = {
+  status: '',
+  search: '',
+}
+
 export function EmployerJobsPage() {
   const [jobs, setJobs] = useState([])
+  const [filters, setFilters] = useState(initialFilters)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
-  useEffect(() => {
-    const loadJobs = async () => {
-      setLoading(true)
-      setError('')
+  const loadJobs = async (activeFilters = {}) => {
+    setLoading(true)
+    setError('')
 
-      try {
-        const response = await listEmployerJobs()
-        setJobs(response.jobs || [])
-      } catch (requestError) {
-        setError(requestError.message || 'Unable to load employer jobs')
-      } finally {
-        setLoading(false)
-      }
+    try {
+      const response = await listEmployerJobs(activeFilters)
+      setJobs(response.jobs || [])
+    } catch (requestError) {
+      setError(requestError.message || 'Unable to load employer jobs')
+    } finally {
+      setLoading(false)
     }
+  }
 
+  useEffect(() => {
     loadJobs()
   }, [])
+
+  const handleFilterChange = (event) => {
+    const { name, value } = event.target
+    setFilters((previous) => ({
+      ...previous,
+      [name]: value,
+    }))
+  }
+
+  const handleFilterSubmit = async (event) => {
+    event.preventDefault()
+    await loadJobs(filters)
+  }
+
+  const handleResetFilters = async () => {
+    setFilters(initialFilters)
+    await loadJobs()
+  }
 
   return (
     <section className="space-y-4">
@@ -36,6 +60,38 @@ export function EmployerJobsPage() {
           Create Job
         </Link>
       </div>
+
+      <form onSubmit={handleFilterSubmit} className="grid gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4 md:grid-cols-[180px,1fr,auto,auto]">
+        <select
+          name="status"
+          value={filters.status}
+          onChange={handleFilterChange}
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-primary"
+        >
+          <option value="">All statuses</option>
+          <option value="draft">Draft</option>
+          <option value="published">Published</option>
+          <option value="closed">Closed</option>
+        </select>
+        <input
+          name="search"
+          type="text"
+          value={filters.search}
+          onChange={handleFilterChange}
+          placeholder="Search title, description, location, or skills"
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-primary"
+        />
+        <button type="submit" className="rounded-md bg-brand-primary px-4 py-2 text-sm font-semibold text-white">
+          Filter
+        </button>
+        <button
+          type="button"
+          onClick={handleResetFilters}
+          className="rounded-md border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700"
+        >
+          Reset
+        </button>
+      </form>
 
       {loading && <p className="text-sm text-slate-600">Loading jobs...</p>}
       {error && <p className="text-sm text-red-700">{error}</p>}

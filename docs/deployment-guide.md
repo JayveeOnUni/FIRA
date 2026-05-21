@@ -27,6 +27,7 @@ Server:
 - `JWT_EXPIRES_IN`
 - `AUTH_COOKIE_NAME`
 - `UPLOAD_MAX_FILE_SIZE_MB`
+- `BACKUP_DIR`
 
 Client:
 - `VITE_API_BASE_URL`
@@ -129,14 +130,63 @@ $env:DOTENV_CONFIG_QUIET='true'
 npm run test:phase7:governance
 ```
 
-## 8) Demo Data Preparation
+## 8) Database Backup / Export
+Before a final demo, defense rehearsal, or deployment change, create a PostgreSQL SQL dump:
+
+```bash
+cd server
+npm run db:backup
+```
+
+Requirements:
+- PostgreSQL client tools must be installed.
+- `pg_dump` must be available on `PATH`.
+- `DATABASE_URL` must point to the target database.
+- Backups are written to `BACKUP_DIR` (`backups` by default).
+
+Restore a SQL dump into the configured database:
+
+```bash
+cd server
+$env:RESTORE_FILE="..\backups\fira-backup-example.sql"
+npm run db:restore
+```
+
+Restore requirements:
+- `psql` must be installed and available on `PATH`.
+- `RESTORE_FILE` must point to an existing `.sql` dump.
+- Restore into a prepared database and confirm the target environment before running.
+
+## 9) Security Readiness Checks
+- Use `NODE_ENV=production` for deployed backend services.
+- Use a strong `JWT_SECRET` with at least 32 characters.
+- Confirm `CLIENT_ORIGIN` matches the deployed frontend URL exactly.
+- Confirm HTTPS is enabled at the hosting/proxy layer so secure cookies and HSTS work correctly.
+- Verify staff-only routes such as `/api/agency-staff/audit/logs` return `403` for applicant and employer accounts.
+- Review audit activity before the final demo and export CSV evidence when needed.
+
+## 10) Demo Data Preparation
 Options:
 1. Keep seeded staff account from `db:seed` and create applicant/employer accounts through UI.
 2. Run the functional validation script once to auto-generate sample jobs/applications/matching records in local DB.
 
-## 9) Controlled Deployment Notes
+## 11) Controlled Deployment Notes
 - keep secrets out of source control
 - use strong `JWT_SECRET` in non-local environments
 - configure `CLIENT_ORIGIN` to deployed frontend URL
 - confirm upload directory permissions (`server/uploads/applicant-documents`)
 - keep matching as decision support only; no automatic ATS mutation
+
+## 12) Thesis Defense Demo Checklist
+- Staff can log in and access ATS Queue, Applicants, Jobs Monitor, Endorsements, and audit monitoring.
+- Employer can create/edit jobs, view applicants, view ranked applicants, export job review CSV, and see match explanations.
+- Applicant can update profile, upload documents, apply to jobs, view application history, and view recommended jobs.
+- Matching screens show decision-support notices, confidence/explanation details, and human-review reminders.
+- Backup command has been tested or a recent database dump is available.
+- Frontend production build has been generated with `npm run build`.
+
+## 13) Optional Demo Mode
+Set `VITE_DEMO_MODE=true` in `client/.env` to display demo-mode banners in public and dashboard layouts. This is intended for thesis presentation walkthroughs and sample-data environments.
+
+## 14) Maintenance Readiness Monitor
+Agency staff can use the dashboard maintenance card, powered by `/api/agency-staff/maintenance/readiness`, to review health, audit activity, runtime diagnostics, and final handover reminders.

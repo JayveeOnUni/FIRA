@@ -12,6 +12,7 @@ function getRoleLabel(role) {
 export function DashboardLayout() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const isDemoMode = import.meta.env.VITE_DEMO_MODE === 'true'
 
   const dashboardPath = getDashboardPath(user?.role)
   const roleLabel = getRoleLabel(user?.role)
@@ -56,6 +57,14 @@ export function DashboardLayout() {
 
   return (
     <div className="min-h-screen bg-slate-100">
+      <a href="#dashboard-content" className="skip-link">
+        Skip to dashboard content
+      </a>
+      {isDemoMode && (
+        <div className="bg-amber-100 px-4 py-2 text-center text-sm font-semibold text-amber-900" role="status">
+          Demo mode is enabled. Use seeded/demo data for presentation and avoid entering real applicant information.
+        </div>
+      )}
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <div>
@@ -79,7 +88,7 @@ export function DashboardLayout() {
 
       <div className="mx-auto grid w-full max-w-7xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[220px,1fr] lg:px-8">
         <aside className="rounded-xl border border-slate-200 bg-white p-4">
-          <nav className="flex flex-col gap-2 text-sm">
+          <nav className="flex flex-col gap-2 text-sm" aria-label={`${roleLabel} dashboard navigation`}>
             {roleLinks.map((link) => (
               <NavLink
                 key={link.to}
@@ -111,7 +120,7 @@ export function DashboardLayout() {
           </nav>
         </aside>
 
-        <main className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <main id="dashboard-content" className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm" tabIndex={-1}>
           <Outlet />
         </main>
       </div>

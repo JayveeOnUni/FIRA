@@ -26,6 +26,15 @@
 | TC-014 | Staff ranked applicants | Staff authenticated, applicants available | `GET /api/matching/staff/jobs/:jobId/ranked-applicants` | Ranked applicants with scores | `200`, ranked list returned | Pass | `6ms` |
 | TC-015 | Decision-support integrity | Application status already set | Invoke matching endpoints then re-check application | ATS status unchanged | Status remained `Endorsed` | Pass | Confirms no auto ATS mutation from matching |
 | TC-016 | Dependency failure handling | AI service intentionally stopped | `GET /api/matching/applicant/recommended-jobs` | Graceful dependency error | `503`, message `AI matching service health check failed` | Pass | Clear fallback behavior |
+| TC-017 | Staff audit monitoring access | Agency staff authenticated | `GET /api/agency-staff/audit/summary` | Audit summary returned | Pending final manual run | Pending | Priority 4 release-readiness test |
+| TC-018 | Staff audit access guard | Applicant or employer authenticated | `GET /api/agency-staff/audit/logs` | Access denied | Pending final manual run | Pending | Confirms role-based access preservation |
+| TC-019 | Audit CSV export | Agency staff authenticated, audit logs available | `GET /api/agency-staff/audit/logs?format=csv` | CSV file response with audit rows | Pending final manual run | Pending | Export evidence for defense/demo |
+| TC-020 | Production env guard | Backend started with `NODE_ENV=production` and weak `JWT_SECRET` | Start API server | Startup fails with clear configuration error | Pending final manual run | Pending | Security hardening check |
+| TC-021 | Database backup command | PostgreSQL client tools available and `DATABASE_URL` configured | `npm run db:backup` from `server` | SQL dump written to backup directory | Pending final manual run | Pending | Deployment preparation check |
+| TC-022 | Accessibility skip links | Frontend running in browser | Keyboard tab from page top | Skip link appears and moves focus to main content | Pending final manual run | Pending | UI/UX accessibility check |
+| TC-023 | Maintenance readiness summary | Agency staff authenticated, API dependencies available | `GET /api/agency-staff/maintenance/readiness` | Readiness payload includes health, audit, diagnostics, and checklist | Pending final manual run | Pending | Priority 5 monitoring preparation |
+| TC-024 | Database restore command guard | `RESTORE_FILE` unset | `npm run db:restore` from `server` | Command fails safely with explicit `RESTORE_FILE` message | Pending final manual run | Pending | Prevents accidental restore |
+| TC-025 | Demo mode banner | `VITE_DEMO_MODE=true` and frontend rebuilt | Open public and dashboard pages | Demo banner is visible | Pending final manual run | Pending | Thesis demo mode support |
 
 ## Defect Tracking Summary
 | Defect ID | Issue Description | Severity | Affected Module | Status | Resolution Summary |

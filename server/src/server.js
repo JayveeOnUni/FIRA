@@ -1,5 +1,7 @@
 const { app } = require('./app')
-const { env } = require('./config/env')
+const { env, validateProductionEnv } = require('./config/env')
+
+validateProductionEnv()
 
 app.listen(env.port, () => {
   // Keep startup log concise for local development.

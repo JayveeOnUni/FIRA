@@ -232,7 +232,16 @@ async function createEmployerJob(userId, payload) {
   return result.rows[0]
 }
 
-async function listEmployerJobs(userId) {
+function normalizeSearch(search) {
+  if (typeof search !== 'string') {
+    return null
+  }
+
+  const trimmed = search.trim().toLowerCase()
+  return trimmed ? `%${trimmed}%` : null
+}
+
+async function listEmployerJobs(userId, filters = {}) {
   const employer = await getEmployerContext(userId)
   if (!employer.company_id) {
     return []
@@ -261,9 +270,24 @@ async function listEmployerJobs(userId) {
       )::INT AS application_count
     FROM jobs j
     WHERE j.company_id = $1
+      AND (
+        $2::text IS NULL
+        OR j.status = $2
+      )
+      AND (
+        $3::text IS NULL
+        OR LOWER(j.title) LIKE $3
+        OR LOWER(COALESCE(j.description, '')) LIKE $3
+        OR LOWER(COALESCE(j.location, '')) LIKE $3
+        OR LOWER(COALESCE(j.required_skills, '')) LIKE $3
+      )
     ORDER BY j.created_at DESC
     `,
-    [employer.company_id],
+    [
+      employer.company_id,
+      normalizeOptional(filters.status),
+      normalizeSearch(filters.search),
+    ],
   )
 
   return result.rows

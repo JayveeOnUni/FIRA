@@ -4,6 +4,10 @@ export function getApplicantProfile() {
   return apiGet('/applicants/profile')
 }
 
+export function getApplicantDashboardSummary() {
+  return apiGet('/applicants/dashboard')
+}
+
 export function updateApplicantProfile(payload) {
   return apiRequest('/applicants/profile', {
     method: 'PUT',

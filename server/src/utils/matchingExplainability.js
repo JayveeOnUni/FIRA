@@ -91,6 +91,47 @@ function getRelevanceLabel(score) {
   }
 }
 
+function getConfidenceLabel({ score, warnings = [] }) {
+  const safeScore = Number(score)
+  if (!Number.isFinite(safeScore)) {
+    return {
+      level: 'unknown',
+      label: 'Unknown confidence',
+      guidance: 'Confidence cannot be computed because the match score is unavailable.',
+    }
+  }
+
+  if (warnings.length >= 2) {
+    return {
+      level: 'low',
+      label: 'Low confidence',
+      guidance: 'Several input-quality warnings are present. Treat this ranking as exploratory.',
+    }
+  }
+
+  if (safeScore >= 0.78 && warnings.length === 0) {
+    return {
+      level: 'high',
+      label: 'High confidence',
+      guidance: 'Strong score and adequate text detail. Still validate manually before any decision.',
+    }
+  }
+
+  if (safeScore >= 0.58 && warnings.length <= 1) {
+    return {
+      level: 'medium',
+      label: 'Moderate confidence',
+      guidance: 'Useful signal, but the match should be paired with manual review.',
+    }
+  }
+
+  return {
+    level: 'low',
+    label: 'Low confidence',
+    guidance: 'Limited signal strength. Use only as a starting point for review.',
+  }
+}
+
 function buildMatchFactors({ applicant, job }) {
   const matchedSkills = intersectTerms(
     `${applicant?.skills_summary || ''} ${applicant?.preferred_job_category || ''}`,
@@ -135,17 +176,59 @@ function buildDataQualityWarnings({ applicant, job }) {
   return warnings.slice(0, 3)
 }
 
+function buildRankingReasons({ score, keywords = [], factors, warnings }) {
+  const reasons = []
+  const safeScore = Number(score)
+
+  if (Number.isFinite(safeScore)) {
+    reasons.push(`SBERT cosine similarity: ${safeScore.toFixed(3)}`)
+  }
+
+  if (Array.isArray(keywords) && keywords.length > 0) {
+    reasons.push(`Shared semantic terms: ${keywords.slice(0, 5).join(', ')}`)
+  }
+
+  if (factors.matched_skills.length > 0) {
+    reasons.push(`Skill overlap: ${factors.matched_skills.join(', ')}`)
+  }
+
+  if (factors.matched_qualifications.length > 0) {
+    reasons.push(`Qualification overlap: ${factors.matched_qualifications.join(', ')}`)
+  }
+
+  if (factors.matched_experience.length > 0) {
+    reasons.push(`Experience overlap: ${factors.matched_experience.join(', ')}`)
+  }
+
+  if (warnings.length > 0) {
+    reasons.push('Input completeness warnings reduce confidence.')
+  }
+
+  return reasons.slice(0, 6)
+}
+
 function buildExplainabilityPayload({ score, summary, keywords = [], applicant, job }) {
   const relevance = getRelevanceLabel(score)
   const factors = buildMatchFactors({ applicant, job })
   const warnings = buildDataQualityWarnings({ applicant, job })
+  const confidence = getConfidenceLabel({ score, warnings })
+  const safeKeywords = Array.isArray(keywords) ? keywords : []
 
   return {
     explanation_summary: summary || 'Semantic relevance generated from available profile and job text.',
-    explanation_keywords: Array.isArray(keywords) ? keywords : [],
+    explanation_keywords: safeKeywords,
     relevance_level: relevance.level,
     relevance_label: relevance.label,
     score_guidance: relevance.guidance,
+    confidence_level: confidence.level,
+    confidence_label: confidence.label,
+    confidence_guidance: confidence.guidance,
+    ranking_reasons: buildRankingReasons({
+      score,
+      keywords: safeKeywords,
+      factors,
+      warnings,
+    }),
     matched_skills: factors.matched_skills,
     matched_qualifications: factors.matched_qualifications,
     matched_experience: factors.matched_experience,
@@ -157,5 +240,6 @@ function buildExplainabilityPayload({ score, summary, keywords = [], applicant, 
 
 module.exports = {
   getRelevanceLabel,
+  getConfidenceLabel,
   buildExplainabilityPayload,
 }

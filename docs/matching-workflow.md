@@ -9,6 +9,8 @@ Applicant matching text combines:
 - applicant name context
 - resume/document filename metadata (as lightweight context only)
 
+The current prototype does not perform full PDF/DOCX resume body extraction for matching. Any thesis or defense discussion should describe matching as profile-field-based unless resume text extraction is later implemented and tested.
+
 Job matching text combines:
 - job title
 - job description
@@ -82,3 +84,14 @@ The same normalization approach is applied consistently before embedding and key
 ## 9. Decision-Support Constraint
 Matching is explicitly presented as decision support only.  
 Human users (staff/employer) keep full control over ATS transitions, endorsements, and final hiring actions.
+
+## 10. Evaluation Constraint
+Functional endpoint tests only prove that matching routes, AI-service calls, caching, and persistence work. They do not prove ranking quality.
+
+For thesis evaluation, matching quality should be measured with:
+- labeled applicant-job pairs
+- baseline comparison against keyword overlap or TF-IDF
+- ranking metrics such as Precision@5 and NDCG@10
+- qualitative error analysis
+
+Raw cosine similarity thresholds must not be treated as universal hiring categories without calibration on representative data.

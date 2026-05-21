@@ -1,5 +1,5 @@
 const express = require('express')
-const { roleDashboardController } = require('../controllers/dashboard.controller')
+const { applicantDashboardController } = require('../controllers/dashboard.controller')
 const { requireAuth } = require('../middleware/authRequired')
 const { requireRole } = require('../middleware/roleGuard')
 const {
@@ -18,7 +18,7 @@ const { withdrawApplicationSchema } = require('../validation/applications.valida
 
 const router = express.Router()
 
-router.get('/dashboard', requireAuth, requireRole('applicant'), roleDashboardController('applicant'))
+router.get('/dashboard', requireAuth, requireRole('applicant'), asyncHandler(applicantDashboardController))
 router.get('/profile', requireAuth, requireRole('applicant'), asyncHandler(getApplicantProfileController))
 router.put(
   '/profile',

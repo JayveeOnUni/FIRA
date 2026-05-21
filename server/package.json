@@ -9,6 +9,8 @@
     "dev": "nodemon src/server.js",
     "db:migrate": "node scripts/db-migrate.js",
     "db:seed": "node scripts/db-seed.js",
+    "db:backup": "node scripts/db-backup.js",
+    "db:restore": "node scripts/db-restore.js",
     "test:phase6:functional": "node scripts/phase6-functional-check.js",
     "test:phase7:governance": "node scripts/phase7-governance-check.js"
   },

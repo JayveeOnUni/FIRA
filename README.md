@@ -82,6 +82,19 @@ cd client
 npm run build
 ```
 
+- Database backup/export:
+```bash
+cd server
+npm run db:backup
+```
+
+- Database restore from SQL dump:
+```bash
+cd server
+$env:RESTORE_FILE="..\backups\fira-backup-example.sql"
+npm run db:restore
+```
+
 - Run functional API validation suite (regression baseline):
 ```bash
 cd server
@@ -126,6 +139,9 @@ Matching scores are decision-support signals only.
 
 ## Documentation Index
 - [Phase 7 Summary](docs/phase-7-summary.md)
+- [Priority 3 Summary](docs/priority-3-summary.md)
+- [Priority 4 Finalization Notes](docs/priority-4-finalization.md)
+- [Priority 5 Optional Enhancements](docs/priority-5-optional-enhancements.md)
 - [Phase 7 Governance Results](docs/phase-7-governance-results.json)
 - [Test Cases](docs/test-cases.md)
 - [Quality Evaluation](docs/quality-evaluation.md)

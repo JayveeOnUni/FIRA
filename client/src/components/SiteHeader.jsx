@@ -30,7 +30,7 @@ export function SiteHeader() {
           FIRA Platform
         </NavLink>
 
-        <nav className="flex flex-wrap items-center gap-2 text-sm">
+        <nav className="flex flex-wrap items-center gap-2 text-sm" aria-label="Primary navigation">
           {links.map((link) => (
             <NavLink
               key={link.to}

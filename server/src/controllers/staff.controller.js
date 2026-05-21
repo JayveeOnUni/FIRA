@@ -13,6 +13,8 @@ const {
 const { parsePositiveInt } = require('../utils/parse')
 const { ApiError } = require('../utils/ApiError')
 const { APPLICATION_STATUSES, STAFF_ATS_TRANSITIONS } = require('../utils/constants')
+const { getAuditActivitySummary, listAuditLogs, auditRowsToCsv } = require('../services/audit.service')
+const { getMaintenanceReadinessSummary } = require('../services/maintenance.service')
 
 function parseOptionalPositiveInt(value, fieldName) {
   if (value === undefined || value === null || String(value).trim() === '') {
@@ -32,6 +34,32 @@ function parseOptionalBoolean(value, fieldName) {
   if (normalized === 'false') return false
 
   throw new ApiError(400, `${fieldName} must be "true" or "false"`)
+}
+
+function parseOptionalLimit(value) {
+  if (value === undefined || value === null || String(value).trim() === '') {
+    return 50
+  }
+
+  const parsed = Number(value)
+  if (!Number.isInteger(parsed) || parsed <= 0 || parsed > 200) {
+    throw new ApiError(400, 'limit must be an integer between 1 and 200')
+  }
+
+  return parsed
+}
+
+function parseOptionalExportFormat(value) {
+  if (value === undefined || value === null || String(value).trim() === '') {
+    return 'json'
+  }
+
+  const normalized = String(value).trim().toLowerCase()
+  if (normalized === 'json' || normalized === 'csv') {
+    return normalized
+  }
+
+  throw new ApiError(400, 'format must be either "json" or "csv"')
 }
 
 async function staffDashboardController(req, res) {
@@ -139,6 +167,38 @@ async function staffAtsCatalogController(req, res) {
   })
 }
 
+async function staffAuditActivitySummaryController(req, res) {
+  const summary = await getAuditActivitySummary()
+  return res.status(200).json(summary)
+}
+
+async function staffAuditLogsController(req, res) {
+  const format = parseOptionalExportFormat(req.query.format)
+  const logs = await listAuditLogs({
+    search: req.query.search,
+    entityType: req.query.entityType,
+    action: req.query.action,
+    userId: parseOptionalPositiveInt(req.query.userId, 'userId'),
+    limit: parseOptionalLimit(req.query.limit),
+  })
+
+  if (format === 'csv') {
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8')
+    res.setHeader('Content-Disposition', 'attachment; filename="audit-activity.csv"')
+    return res.status(200).send(auditRowsToCsv(logs))
+  }
+
+  return res.status(200).json({
+    logs,
+    count: logs.length,
+  })
+}
+
+async function staffMaintenanceReadinessController(req, res) {
+  const summary = await getMaintenanceReadinessSummary()
+  return res.status(200).json(summary)
+}
+
 module.exports = {
   staffDashboardController,
   staffApplicantListController,
@@ -151,4 +211,7 @@ module.exports = {
   staffEndorsementsController,
   staffOperationalSummaryController,
   staffAtsCatalogController,
+  staffAuditActivitySummaryController,
+  staffAuditLogsController,
+  staffMaintenanceReadinessController,
 }

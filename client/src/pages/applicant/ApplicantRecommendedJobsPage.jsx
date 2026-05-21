@@ -88,6 +88,9 @@ export function ApplicantRecommendedJobsPage() {
                   keywords={item.explanation_keywords}
                   relevanceLabel={item.relevance_label}
                   scoreGuidance={item.score_guidance}
+                  confidenceLabel={item.confidence_label}
+                  confidenceGuidance={item.confidence_guidance}
+                  rankingReasons={item.ranking_reasons}
                   matchedSkills={item.matched_skills}
                   matchedQualifications={item.matched_qualifications}
                   matchedExperience={item.matched_experience}
